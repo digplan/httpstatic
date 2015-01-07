@@ -1,0 +1,6 @@
+{
+  "name"            : "httpstatic",
+  "version"         : "0.0.1",
+  "description"     : "Static server",
+  "main"            : "./httpstatic.js"
+}
