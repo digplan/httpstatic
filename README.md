@@ -14,3 +14,8 @@ function handler(r, s){
 }
 require('httpstatic')(handler);
 ````
+
+livereload feature    
+````
+livereload=1 node -e "require('httpstatic')()"
+````
