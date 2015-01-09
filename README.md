@@ -1,7 +1,8 @@
 HTTP Static
 ===========
 
-Simple HTTP static server with multi-domain hosting capabilities.  Primarily for SPA (single page applications).  Caching by default.  Minimal resource usage.
+Simple HTTP static server with multi-domain hosting capabilities.  Multiple domain SPAs (single page applications).    
+Caching by default.  Minimal resource usage.  Live reload feature for development optional.    
     
 Static folder files are cached and served directly.    
 Files named after the domain are served as single page applications.    
