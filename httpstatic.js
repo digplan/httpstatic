@@ -22,7 +22,7 @@ function cli_reload(){
 var clijs = '\n\n<script>\n('+cli_reload.toString()+')()\n</script>';
 
 function buildCache(){
-  if(fs.existsSync('./static')) return;
+  if(!fs.existsSync('./static')) return;
   var cache = {};
   fs.readdirSync('./static')
     .filter(function(f){ return !f.match(/^\.$/) })
