@@ -53,11 +53,11 @@ module.exports = function(use) {
     r.on('end', function() {
 
       s.setHeader('Content-Type', 'text/html');
-      if(cache[r.headers.host])
+      if(cache && cache[r.headers.host])
       	return s.end(cache[r.headers.host]);
 
       var url = (r.url === '/') ? 'index.html' : r.url.slice(1);
-      if(cache[url])
+      if(cache && cache[url])
         return s.end(cache[url]);
 
       try{
