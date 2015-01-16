@@ -34,7 +34,7 @@ function buildCache(){
   return cache;
 }
 
-module.exports = function(use) {
+module.exports = function(use, options) {
   cache = buildCache();
 
   require('http').createServer(function(r, s) {
@@ -76,5 +76,5 @@ module.exports = function(use) {
 
   })
 
-  .listen(80);
+  .listen((options && options.port) || 80);
 }
