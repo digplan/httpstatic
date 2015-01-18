@@ -36,9 +36,13 @@ module.exports = function(use) {
       	r.body = d;
       }
 
-      if(!use){
-      	s.writeHeader(404); 
-        return s.end();
+      !use &&	s.exit(404);
+
+      var parts = require('url').parse(r.url);
+      if(parts.search){
+        r.url = r.url.replace(parts.search, '');
+        var qs = require('querystring').parse(parts.query);
+        for(i in qs) r.body[i] = qs[i];
       }
 
       use(r, s);
