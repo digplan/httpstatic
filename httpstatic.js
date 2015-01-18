@@ -1,48 +1,19 @@
-var fs = require('fs');
-var cache = {}, client;
-var livereload = process.env.livereload;
-var flag;
+module.exports = function(use) {
 
-if(livereload){
- fs.watch('./static', function(){
-  cache = buildCache();
-  if(client)
-    setTimeout(function(){client.write('data:ok\n\n');}, 100);
- });
-}
+  var fs = require('fs');
 
-function cli_reload(){
-  console.log('registering for reload');
-  var ev = new EventSource('/reload');
-  ev.onmessage = function(){
-    setTimeout(function(){history.go()}, 100); 
-    console.log('reloading');
-  };
-}
-var clijs = '\n\n<script>\n('+cli_reload.toString()+')()\n</script>';
-
-function buildCache(){
-  if(!fs.existsSync('./static')) return;
   var cache = {};
   fs.readdirSync('./static')
     .filter(function(f){ return !f.match(/^\.$/) })
     .forEach(function(f){
-      if(!f.match(/^\./) && !f.match(/\.TMP$/)) 
-        cache[f] = fs.readFileSync('./static/' + f).toString();
-      if(livereload) cache[f] += clijs;
+      cache[f] = fs.readFileSync('./static/' + f).toString();
     });
-  return cache;
-}
-
-module.exports = function(use, options) {
-  cache = buildCache();
 
   require('http').createServer(function(r, s) {
 
-    if(livereload && r.url == '/reload'){
-      s.setHeader('Content-Type', 'text/event-stream');
-      s.setHeader('Access-Control-Allow-Origin', '*');
-      return client = s;
+    s.exit = function(c, r){
+      s.writeHeader(c);
+      s.end(r||'');
     }
 
     var d = '';
@@ -52,12 +23,11 @@ module.exports = function(use, options) {
 
     r.on('end', function() {
 
-      s.setHeader('Content-Type', 'text/html');
-      if(cache && cache[r.headers.host])
+      if(cache[r.headers.host])
       	return s.end(cache[r.headers.host]);
 
       var url = (r.url === '/') ? 'index.html' : r.url.slice(1);
-      if(cache && cache[url])
+      if(cache[url])
         return s.end(cache[url]);
 
       try{
@@ -76,5 +46,5 @@ module.exports = function(use, options) {
 
   })
 
-  .listen((options && options.port) || 80);
+  .listen(80);
 }
