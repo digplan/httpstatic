@@ -39,7 +39,9 @@ module.exports = function(use) {
       !use &&	s.exit(404);
 
       var parts = require('url').parse(r.url);
+
       if(parts.search){
+        r.body = {};
         r.url = r.url.replace(parts.search, '');
         var qs = require('querystring').parse(parts.query);
         for(i in qs) r.body[i] = qs[i];
