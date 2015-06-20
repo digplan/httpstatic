@@ -1,63 +1,30 @@
-module.exports = function(use, port) {
+function httpstatic(){
+  var fs = require('fs'), 
+    cache = {}, 
+    nocache = process.env.nocache, 
+    dir = './static/';
 
-  var fs = require('fs');
-  var nocache = process.env.nocache;
-  
-  var cache = {};
-  try {
-    fs.readdirSync('./static')
-      .filter(function(f){ return !f.match(/^\.$/) })
-      .forEach(function(f){
-        cache[f] = fs.readFileSync('./static/' + f).toString();
-      });
-  } catch(e){
-      fs.mkdir('./static');
-      fs.writeFileSync('./static/index.html', 'hi there');
-      nocache = true;  
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+    fs.mkdirSync(dir + 'localhost');  
+    fs.writeFileSync(dir + 'localhost/index.html', 'hi there');
   }
 
-  require('http').createServer(function(r, s) {
-
-    s.exit = function(c, r){
-      s.writeHeader(c);
-      s.end(r||'');
-    }
-
-    var d = '';
-    r.on('data', function(chunk) {
-      d += chunk.toString();
+  require('node-dir').files(dir, function(err, files) {
+    if (err) throw err;
+    files.map(function(fn) {
+      cache[fn] = require('fs').readFileSync(fn).toString();
     });
+  });
 
-    r.on('end', function() {
+  return function(r, s){
+    if(r.url === '/') r.url = '/index.html';
+    var path = dir + r.headers.host + r.url;
+    if(!nocache && cache[path]) s.end(cache[path]);
+    s.end(fs.readFileSync(path).toString());
+  }
+}
 
-      if(cache[r.headers.host] && !nocache)
-      	return s.end(cache[r.headers.host]);
-
-      var url = (r.url === '/') ? 'index.html' : r.url.slice(1);
-      if(cache[url])
-        return s.end(cache[url]);
-
-      try{
-      	r.body = JSON.parse(d);
-      } catch(e){
-      	r.body = d;
-      }
-
-      !use &&	s.exit(404);
-
-      var parts = require('url').parse(r.url);
-
-      if(parts.search){
-        r.body = {};
-        r.url = r.url.replace(parts.search, '');
-        var qs = require('querystring').parse(parts.query);
-        for(i in qs) r.body[i] = qs[i];
-      }
-
-      use(r, s);
-    });
-
-  })
-
-  .listen(port||80);
+module.exports = function(func, port){
+  require('http').createServer(func || httpstatic()).listen(port || 80);
 }
