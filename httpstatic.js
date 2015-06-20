@@ -1,4 +1,4 @@
-function httpstatic(){
+function httpstatic(func){
   var fs = require('fs'), 
     cache = {}, 
     nocache = process.env.nocache, 
@@ -18,13 +18,22 @@ function httpstatic(){
   });
 
   return function(r, s){
-    if(r.url === '/') r.url = '/index.html';
-    var path = dir + r.headers.host + r.url;
-    if(!nocache && cache[path]) s.end(cache[path]);
-    s.end(fs.readFileSync(path).toString());
+      var body = '';
+      r.on('data', function (data) {
+        body += data;
+        if (body.length > 1e6) r.connection.destroy();
+      });
+      r.on('end', function () {
+        r.body = body;
+        if(func && func(r, s)) return; // do not continue
+        if(r.url === '/') r.url = '/index.html';
+        var path = dir + r.headers.host + r.url;
+        if(!nocache && cache[path]) s.end(cache[path]);
+        s.end(fs.readFileSync(path).toString());
+      });
   }
 }
 
 module.exports = function(func, port){
-  require('http').createServer(func || httpstatic()).listen(port || 80);
+  require('http').createServer(httpstatic(func)).listen(port || 80);
 }
