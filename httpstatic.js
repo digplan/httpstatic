@@ -1,19 +1,21 @@
 module.exports = function(use, port) {
 
   var fs = require('fs');
-
-  var cache = {};
-  fs.readdirSync('./static')
-    .filter(function(f){ return !f.match(/^\.$/) })
-    .forEach(function(f){
-      cache[f] = fs.readFileSync('./static/' + f).toString();
-    });
-
-  if(!Object.keys({}).length){
-    fs.mkdir('./static');
-    fs.writeFileSync('./static/index.html', 'hi there');
-  }
+  var nocache = process.env.nocache;
   
+  var cache = {};
+  try {
+    fs.readdirSync('./static')
+      .filter(function(f){ return !f.match(/^\.$/) })
+      .forEach(function(f){
+        cache[f] = fs.readFileSync('./static/' + f).toString();
+      });
+  } catch(e){
+      fs.mkdir('./static');
+      fs.writeFileSync('./static/index.html', 'hi there');
+      nocache = true;  
+  }
+
   require('http').createServer(function(r, s) {
 
     s.exit = function(c, r){
@@ -28,7 +30,7 @@ module.exports = function(use, port) {
 
     r.on('end', function() {
 
-      if(cache[r.headers.host] && !process.env.nocache)
+      if(cache[r.headers.host] && !nocache)
       	return s.end(cache[r.headers.host]);
 
       var url = (r.url === '/') ? 'index.html' : r.url.slice(1);
