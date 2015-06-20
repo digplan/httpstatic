@@ -3,8 +3,9 @@ HTTP Static
 
 Simple HTTP static server with caching.  Minimal resource usage.  
     
-Static folder files are cached and served directly.  From ./static folder, which is created if not exists.    
-Takes request body and GET query string, and parses to JSON. (r.body)    
+Static folder files are cached and served directly, for multiple domains.  
+From ./static folder, which is created if not exists.    
+Request body (r.body)    
 
 Example
 ````
