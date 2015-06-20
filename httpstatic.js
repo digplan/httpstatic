@@ -28,7 +28,7 @@ module.exports = function(use, port) {
 
     r.on('end', function() {
 
-      if(cache[r.headers.host])
+      if(cache[r.headers.host] && !process.env.nocache)
       	return s.end(cache[r.headers.host]);
 
       var url = (r.url === '/') ? 'index.html' : r.url.slice(1);
