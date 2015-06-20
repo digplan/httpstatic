@@ -1,11 +1,9 @@
 HTTP Static
 ===========
 
-Simple HTTP static server with multi-domain hosting capabilities.  Multiple domain SPAs (single page applications).    
-Caching by default.  Minimal resource usage.  Live reload feature for development optional.    
+Simple HTTP static server with caching.  Minimal resource usage.  
     
-Static folder files are cached and served directly.    
-Files named after the domain are served as single page applications.    
+Static folder files are cached and served directly.  From ./static folder, which is created if not exists.    
 Takes request body and parses to JSON. (r.body)    
 
 Example
@@ -16,7 +14,7 @@ function handler(r, s){
 require('httpstatic')(handler);
 ````
 
-livereload feature    
+Don't cache files
 ````
-livereload=1 node -e "require('httpstatic')()"
+nocache=1 node -e "require('httpstatic')()"
 ````
