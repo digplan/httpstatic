@@ -1,4 +1,4 @@
-module.exports = function(use) {
+module.exports = function(use, port) {
 
   var fs = require('fs');
 
@@ -9,6 +9,11 @@ module.exports = function(use) {
       cache[f] = fs.readFileSync('./static/' + f).toString();
     });
 
+  if(!Object.keys({}).length){
+    fs.mkdir('./static');
+    fs.writeFileSync('./static/index.html', 'hi there');
+  }
+  
   require('http').createServer(function(r, s) {
 
     s.exit = function(c, r){
@@ -52,5 +57,5 @@ module.exports = function(use) {
 
   })
 
-  .listen(80);
+  .listen(port||80);
 }
