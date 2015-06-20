@@ -25,7 +25,7 @@ function httpstatic(func){
       });
       r.on('end', function () {
         r.body = body;
-        if(func && func(r, s)) return; // do not continue
+        func && func(r, s);
         if(r.url === '/') r.url = '/index.html';
         var path = dir + r.headers.host + r.url;
         if(!nocache && cache[path]) s.end(cache[path]);
