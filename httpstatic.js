@@ -4,12 +4,6 @@ function httpstatic(func){
     nocache = process.env.nocache, 
     dir = './static/';
 
-  if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
-    fs.mkdirSync(dir + 'localhost');  
-    fs.writeFileSync(dir + 'localhost/index.html', 'hi there');
-  }
-
   require('node-dir').files(dir, function(err, files) {
     if (err) throw err;
     files.map(function(fn) {
@@ -34,6 +28,16 @@ function httpstatic(func){
   }
 }
 
-module.exports = function(func, port){
-  require('http').createServer(httpstatic(func)).listen(port || 80);
+module.exports = function(f, port){
+  // start server
+  if(!fs.existsSync('certificate.crt'))
+    return http.createServer(f).listen(port||80);
+
+  return https.createServer({
+    ca: fs.readFileSync("./ca_bundle.crt"),
+    key: fs.readFileSync("./private.key"),
+    cert: fs.readFileSync("./certificate.crt")
+  }, f||df).listen(port||443);
+  
+  require('http').createServer(httpstatic(f)).listen(port || 80);
 }
