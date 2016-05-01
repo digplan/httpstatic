@@ -1,6 +1,6 @@
 {
   "name"            : "httpstatic",
-  "version"         : "0.1.0",
-  "description"     : "Static server",
+  "version"         : "1.0.0",
+  "description"     : "Static server for multi domains",
   "main"            : "./httpstatic.js"
 }
