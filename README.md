@@ -10,13 +10,12 @@ Examples
 //  ./static/a.com/index.html
 //  ./static/b.com/index.html
 
-$ port=81 nocache=1 node httpstatic  # Optional port, nocache
+$ port=81 nocache=1 node httpstatic.js  # Optional port, nocache
 
 // use alternate request handling
-function handler(r, s){
-  if(r.url.match(/php$/)) // do something
-  s.write("im intercepting the static request handling");
-  s.end("i used end, i wont continue serving the static page");
-}
-require('./httpstatic.js')(handler, 82);
+````
+require('./httpstatic.js')(function(r, s){
+  s.write('processing..');
+  s.end(); // dont serve the page
+});
 ````
