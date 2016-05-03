@@ -13,7 +13,6 @@ Examples
 $ port=81 nocache=1 node httpstatic.js  # Optional port, nocache
 
 // use alternate request handling
-````
 require('./httpstatic.js')(function(r, s){
   s.write('processing..');
   s.end(); // dont serve the page
