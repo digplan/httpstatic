@@ -1,11 +1,17 @@
 {
-  "name"            : "httpstatic",
-  "version"         : "1.0.0",
-  "description"     : "Static server for multi domains",
-  "main"            : "./httpstatic.js",
-  "dependencies" :
-    { 
-      "node_dir" : "",
-      "colors": ""
-    }
+  "name"        : "httpstatic",
+  "description" : "",
+  "url"         : "http://github.com/digplan/httpstatic",
+  "keywords"    : ["util", "nodejs", "express", "web", "html5"],
+  "author"      : "C Borkert <servnow@outlook.com>",
+  "main"        : "./httpstatic.js",
+  "dependencies": {
+     "xhr2"     : "",
+     "eventsource": ""
+  },
+  "repository": {
+  	 "type"     : "git",
+ 	   "url"      : "git://github.com/digplan/httpstatic.git"
+  },
+  "version"     : "1.0.1"
 }
