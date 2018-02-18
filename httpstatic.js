@@ -50,4 +50,4 @@ module.exports = start = function(f){
 } 
 
 var isScript = !module.parent;
-if(isScript) start();
+if(isScript) start(require(process.cwd() + '/handler.js'));

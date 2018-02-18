@@ -10,8 +10,11 @@ Examples
 //  ./static/a.com/index.html
 //  ./static/b.com/index.html
 
+// Run script
+handler.js in current directory is used to handle requests
 $ port=81 nocache=1 node httpstatic.js  # Optional port, nocache
 
+// include
 // use alternate request handling
 require('./httpstatic.js')(function(r, s){
   s.write('processing..');
