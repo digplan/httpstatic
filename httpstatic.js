@@ -1,6 +1,6 @@
 function httpstatic(func){
   var fs = require('fs'), 
-    cache = {}, colors = require('colors'),
+    cache = {}, 
     nocache = process.env.nocache, 
     sep = require('path').sep,
     dir = __dirname + sep + 'static' + sep;
@@ -31,11 +31,11 @@ function httpstatic(func){
         var path = dir + r.headers.host.match(/[^:]*/) + r.url.replace('/', sep);
 
         if(!fs.existsSync(path)){
-          console.log(colors.red(path.replace(dir,'')));
+          console.log(path.replace(dir,''));
           return s.end('')
         }
 
-        console.log(colors.green(path.replace(dir,'')));
+        console.log(path.replace(dir,''));
         if(!nocache && cache[path]) return s.end(cache[path]);
         s.end(fs.readFileSync(path).toString());
       });
